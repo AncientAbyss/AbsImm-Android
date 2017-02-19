@@ -1,0 +1,67 @@
+<story>
+    <settings>
+        <setting name="initial_command" value="enter ch001" />
+        <setting name="object_error" value="uuhm?" />
+        <setting name="action_error" value="o.O?" />
+    </settings>
+    <part name="ch001" condition="NOT game_started">
+        <action name="enter" state="game_started" text="
+=============\n
+    *Work in progress!*\n
+    (c) 2012-2016 by AncientAbyss\n
+=============\n
+powered by AbsoluteImmersion, https://github.com/AncientAbyss/AbsImm\n
+		"/>
+        <action name="enter" state="in_ch-intro"/>
+        <action name="enter" command="enter ch-intro"/>
+    </part>
+    <part name="ch-intro" condition="in_ch-intro">
+        <action name="enter" text="
+Hello carbon based unit! You reached a prototype of AbsImm, a simple, open, general purpose text adventure engine. I am sorry to have to tell you that I do not have stories available for you quite yet.\n
+However, if you are interested in the project, and want to see it move forward, please /contact me or have a look at my /homepage.\n
+Are you, by any chance, a /writer or /developer?\n
+Please /contact me if you want to know more or want this project to kick off!\n
+\n
+Have a nice day, and thanks for stopping by!
+		"/>
+        <part name="">
+            <action name="developer" state="in_ch-developer" command="enter ch-developer"/>
+            <action name="writer" state="in_ch-writer" command="enter ch-writer"/>
+            <action name="contact" state="in_ch-contact" command="enter ch-contact"/>
+            <action name="homepage" state="in_ch-homepage" command="enter ch-homepage"/>
+            <action name="AbsImm" state="in_ch-homepage" command="enter ch-homepage"/>
+        </part>
+    </part>
+    <part name="ch-writer" condition="in_ch-writer">
+        <action name="enter" text="
+Wohaa, cool! If you want to share one of your stories as interactive adventure,
+you can already do so, just have a look at the /homepage!
+If you need assistance, or simply do not want to do this yourself, please let me know! (/contact).
+        "/>
+    </part>
+    <part name="ch-developer" condition="in_ch-developer">
+        <action name="enter" text="
+Thats great news! If you want to contribute, or just have a look at the source, please visit my GitHub page at https://github.com/AncientAbyss/AbsImm\n
+I would be super happy if you would like to contribute, you know? Lets build the most accessible and generic text adventure engine ever!
+        "/>
+    </part>
+    <part name="ch-contact" condition="in_ch-contact">
+        <action name="enter" text="
+Reach me through mail ancientabyss@zoho.com or visit me at https://github.com/AncientAbyss/AbsImm\n
+I will be happy if I could assist you with *every* request or issue you might experience.\n
+\n
+Everyone.\n
+\n
+Just tell me.\n
+\n
+I am lonely anyways.\n
+\n
+So, write me! :)
+        "/>
+    </part>
+    <part name="ch-homepage" condition="in_ch-homepage">
+        <action name="enter" text="
+You can find all information that is available so far at https://github.com/AncientAbyss/AbsImm\n
+        "/>
+    </part>
+</story>
