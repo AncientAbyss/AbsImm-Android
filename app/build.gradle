@@ -26,5 +26,12 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
+    compile 'at.absoluteimmersion:absim-xmpp-android:1.0-SNAPSHOT'
     testCompile 'junit:junit:4.12'
+}
+
+repositories {
+    maven {
+        url "http://rod.bplaced.net/maven2"
+    }
 }
