@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.stfalcon.chatkit.commons.models.IMessage;
+import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
@@ -60,19 +61,18 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private void initInputHandling(final Story story) {
-        Button button = (Button) findViewById(R.id.input_button);
-        final EditText text = (EditText) findViewById(R.id.edit_message);
-        button.setOnClickListener(new View.OnClickListener() {
+        MessageInput input = (MessageInput) findViewById(R.id.input);
+        input.setInputListener(new MessageInput.InputListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onSubmit(CharSequence input) {
                 try {
-                    String interaction = text.getText().toString();
+                    String interaction = input.toString();
                     addText(interaction, userAuthor);
                     story.interact(interaction);
                 } catch (Exception e) {
                     System.err.println("Failed to interact: " + e.getMessage());
                 }
-                text.setText("");
+                return true;
             }
         });
     }
