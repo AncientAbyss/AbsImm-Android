@@ -11,12 +11,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import com.stfalcon.chatkit.commons.models.IMessage;
+import com.stfalcon.chatkit.messages.MessagesList;
+import com.stfalcon.chatkit.messages.MessagesListAdapter;
+
+import net.ancientabyss.absimm.models.Author;
+import net.ancientabyss.absimm.models.Message;
 
 import org.jivesoftware.smack.SmackException;
 
 import java.io.InputStream;
+import java.util.Date;
+import java.util.UUID;
 
 import at.absoluteimmersion.core.Loader;
 import at.absoluteimmersion.core.ReactionClient;
@@ -24,7 +31,10 @@ import at.absoluteimmersion.core.Story;
 
 public class GameActivity extends AppCompatActivity implements ReactionClient {
 
-    private LinearLayout mainLayout;
+    private static final Author botAuthor = new Author("absimm", "absimm", "");
+    private static final Author userAuthor = new Author("user", "user", "");
+
+    private MessagesListAdapter<IMessage> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +53,9 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             }
         });
 
-        mainLayout = (LinearLayout) findViewById(R.id.main_layout);
+        MessagesList messagesList = (MessagesList) findViewById(R.id.messagesList);
+        adapter = new MessagesListAdapter<>(userAuthor.getId(), null);
+        messagesList.setAdapter(adapter);
         initInputHandling(initStory());
     }
 
@@ -55,7 +67,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             public void onClick(View view) {
                 try {
                     String interaction = text.getText().toString();
-                    addText(">> " + interaction);
+                    addText(interaction, userAuthor);
                     story.interact(interaction);
                 } catch (Exception e) {
                     System.err.println("Failed to interact: " + e.getMessage());
@@ -107,13 +119,12 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     @Override
-    public void reaction(String s) throws SmackException.NotConnectedException {
-        addText(s);
+    public void reaction(String text) throws SmackException.NotConnectedException {
+        addText(text, botAuthor);
     }
 
-    private void addText(String s) {
-        TextView textView = new TextView(this);
-        textView.setText(s.replace("\\n", "\r\n"));
-        mainLayout.addView(textView);
+    private void addText(String text, Author author) {
+        String message = text.replace("\\n", "\r\n");
+        adapter.addToStart(new Message(UUID.randomUUID().toString(), message, author, new Date()), true);
     }
 }
