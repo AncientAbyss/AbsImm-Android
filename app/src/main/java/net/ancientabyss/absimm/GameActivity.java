@@ -7,6 +7,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +33,8 @@ import java.util.UUID;
 import at.absoluteimmersion.core.Loader;
 import at.absoluteimmersion.core.ReactionClient;
 import at.absoluteimmersion.core.Story;
+
+import static org.apache.commons.lang3.StringUtils.INDEX_NOT_FOUND;
 
 public class GameActivity extends AppCompatActivity implements ReactionClient {
 
@@ -91,7 +95,32 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private void initInputHandling(final Story story) {
-        MessageInput input = (MessageInput) findViewById(R.id.input);
+        final MessageInput input = (MessageInput) findViewById(R.id.input);
+
+        input.getInputEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int count, int before) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String inputText = input.getInputEditText().getText().toString();
+                if (StringUtils.indexOf(inputText, '\n') == INDEX_NOT_FOUND) return;
+                String[] lines = StringUtils.split(inputText, '\n');
+                if (lines.length < 1) {
+                    if (inputText.length() > 0) input.getInputEditText().setText("");
+                    return;
+                }
+                interact(lines[0], story);
+                input.getInputEditText().setText("");
+            }
+        });
+
         input.setInputListener(new MessageInput.InputListener() {
             @Override
             public boolean onSubmit(CharSequence input) {
@@ -106,7 +135,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         try {
             addText(interaction, userAuthor);
             commands.add(interaction);
-            story.interact(interaction);
+            story.interact(interaction.toLowerCase());
         } catch (Exception e) {
             System.err.println("Failed to interact: " + e.getMessage());
         }
