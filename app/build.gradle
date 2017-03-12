@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "net.ancientabyss.absimm"
@@ -28,17 +28,16 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:design:25.1.1'
+    compile "com.android.support:support-core-utils:25.1.1"
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
+    //compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     compile 'com.github.stfalcon:chatkit:0.1.2'
-    compile('at.absoluteimmersion:absim-xmpp-android:1.0-SNAPSHOT') {
-        exclude module: 'commons-lang3'
-    }
+    compile 'at.absoluteimmersion:absim-xmpp-android:1.0-SNAPSHOT'
     // compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
