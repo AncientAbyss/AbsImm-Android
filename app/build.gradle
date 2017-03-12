@@ -17,6 +17,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'templates/release-notes.vm'
+    }
 }
 
 dependencies {
@@ -26,8 +34,11 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'at.absoluteimmersion:absim-xmpp-android:1.0-SNAPSHOT'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     compile 'com.github.stfalcon:chatkit:0.1.2'
+    compile('at.absoluteimmersion:absim-xmpp-android:1.0-SNAPSHOT') {
+        exclude module: 'commons-lang3'
+    }
     // compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
