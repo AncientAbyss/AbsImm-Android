@@ -1,5 +1,6 @@
 package net.ancientabyss.absimm;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.messages.MessageInput;
@@ -42,6 +44,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     private static final Author userAuthor = new Author("user", "user", "");
     private static final String prefsName = "absimm-state";
     private static final String statePrefName = "state";
+    private static final String defaultErrorMessage = "Whoops, something went wrong! Please let us know what you were doing (feedback@ancientabyss.net)!";
 
     private List<String> commands = new ArrayList<>();
     private MessagesListAdapter<IMessage> adapter;
@@ -137,7 +140,8 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             commands.add(interaction);
             story.interact(interaction.toLowerCase());
         } catch (Exception e) {
-            System.err.println("Failed to interact: " + e.getMessage());
+            System.err.println(e.getMessage());
+            showError(defaultErrorMessage);
         }
     }
 
@@ -149,14 +153,11 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             byte[] b = new byte[in.available()];
             in.read(b);
             story = new Loader().fromString(new String(b));
-        } catch (Exception e) {
-            System.err.println("Failed loading story: " + e.getMessage());
-        }
-        story.addClient(this);
-        try {
+            story.addClient(this);
             story.tell();
         } catch (Exception e) {
-            System.err.println("Failed telling story: " + e.getMessage());
+            System.err.println(e.getMessage());
+            showError(defaultErrorMessage);
         }
         return story;
     }
@@ -190,5 +191,9 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     private void addText(String text, Author author) {
         String message = text.replace("\\n", "\r\n");
         adapter.addToStart(new Message(UUID.randomUUID().toString(), message, author, new Date()), true);
+    }
+
+    private void showError(String text) {
+        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
     }
 }
