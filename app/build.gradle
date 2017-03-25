@@ -37,7 +37,7 @@ dependencies {
     })
     //compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     compile 'com.github.stfalcon:chatkit:0.1.2'
-    compile 'at.absoluteimmersion:absim-xmpp-android:1.0-SNAPSHOT'
+    compile 'net.ancientabyss.absimm:absimm-core:0.2-SNAPSHOT'
     // compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 

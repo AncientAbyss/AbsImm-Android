@@ -1,6 +1,5 @@
 package net.ancientabyss.absimm;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -20,21 +19,20 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
+import net.ancientabyss.absimm.core.Loader;
+import net.ancientabyss.absimm.core.ReactionClient;
+import net.ancientabyss.absimm.core.Story;
 import net.ancientabyss.absimm.models.Author;
 import net.ancientabyss.absimm.models.Message;
+import net.ancientabyss.absimm.parser.TxtParser;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jivesoftware.smack.SmackException;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import at.absoluteimmersion.core.Loader;
-import at.absoluteimmersion.core.ReactionClient;
-import at.absoluteimmersion.core.Story;
 
 import static org.apache.commons.lang3.StringUtils.INDEX_NOT_FOUND;
 
@@ -149,10 +147,10 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         Story story = null;
         try {
             Resources res = getResources();
-            InputStream in = res.openRawResource(R.raw.demo);
+            InputStream in = res.openRawResource(R.raw.demo_txt);
             byte[] b = new byte[in.available()];
             in.read(b);
-            story = new Loader().fromString(new String(b));
+            story = new Loader(new TxtParser()).fromString(new String(b));
             story.addClient(this);
             story.tell();
         } catch (Exception e) {
@@ -184,7 +182,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     @Override
-    public void reaction(String text) throws SmackException.NotConnectedException {
+    public void reaction(String text) {
         addText(text, botAuthor);
     }
 

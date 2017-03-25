@@ -1,0 +1,61 @@
+=============\n
+    Work in progress!\n
+    (c) 2012-2016 by AncientAbyss\n
+=============\n
+powered by AbsoluteImmersion, https://github.com/AncientAbyss/AbsImm\n
+
+Hello carbon based unit! You reached a prototype of AbsImm, a simple, open, general purpose text adventure engine. I am sorry to have to tell you that I do not have stories available for you quite yet.\n
+However, if you are interested in the project, and want to see it move forward, please /contact me or have a look at my /homepage.\n
+Are you, by any chance, a /writer or /developer?\n
+Please /contact me if you want to know more or want this project to kick off!\n
+\n
+Have a nice day, and thanks for stopping by!
+
+* writer (writer)
+* developer (developer)
+* contact (contact)
+* homepage (homepage)
+
+writer:
+Wohaa, cool! If you want to share one of your stories as interactive adventure,
+you can already do so, just have a look at the /homepage!
+If you need assistance, or simply do not want to do this yourself, please let me know! (/contact).
+
+* writer (writer)
+* developer (developer)
+* contact (contact)
+* homepage (homepage)
+
+developer:
+Thats great news! If you want to contribute, or just have a look at the source, please visit my GitHub page at https://github.com/AncientAbyss/AbsImm\n
+I would be super happy if you would like to contribute, you know? Lets build the most accessible and generic text adventure engine ever!
+
+* writer (writer)
+* developer (developer)
+* contact (contact)
+* homepage (homepage)
+
+contact:
+Reach me through mail ancientabyss@zoho.com or visit me at https://github.com/AncientAbyss/AbsImm\n
+I will be happy if I could assist you with *every* request or issue you might experience.\n
+\n
+Everyone.\n
+\n
+Just tell me.\n
+\n
+I am lonely anyways.\n
+\n
+So, write me! :)
+
+* writer (writer)
+* developer (developer)
+* contact (contact)
+* homepage (homepage)
+
+homepage:
+You can find all information that is available so far at https://github.com/AncientAbyss/AbsImm\n
+
+* writer (writer)
+* developer (developer)
+* contact (contact)
+* homepage (homepage)
