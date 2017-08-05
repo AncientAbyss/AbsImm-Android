@@ -25,6 +25,9 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'templates/release-notes.vm'
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
