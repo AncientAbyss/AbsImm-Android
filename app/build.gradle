@@ -40,7 +40,7 @@ dependencies {
     })
     //compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     compile 'com.github.stfalcon:chatkit:0.1.2'
-    compile 'net.ancientabyss.absimm:absimm-core:0.2-SNAPSHOT'
+    compile 'net.ancientabyss.absimm:absimm-core:0.3-SNAPSHOT'
     // compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
