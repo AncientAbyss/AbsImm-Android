@@ -3,12 +3,14 @@ package net.ancientabyss.absimm;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import net.ancientabyss.absimm.core.Loader;
 import net.ancientabyss.absimm.core.ReactionClient;
 import net.ancientabyss.absimm.core.Story;
+import net.ancientabyss.absimm.core.StoryException;
 import net.ancientabyss.absimm.models.Author;
 import net.ancientabyss.absimm.models.Message;
 import net.ancientabyss.absimm.parser.TxtParser;
@@ -46,6 +49,8 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
 
     private List<String> commands = new ArrayList<>();
     private MessagesListAdapter<IMessage> adapter;
+    private Story story;
+    private SparseArray<Runnable> optionDispatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +71,9 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         MessagesList messagesList = (MessagesList) findViewById(R.id.messagesList);
         adapter = new MessagesListAdapter<>(userAuthor.getId(), null);
         messagesList.setAdapter(adapter);
-        Story story = initStory();
+        story = initStory();
         initInputHandling(story);
+        initOptions();
 
         restoreState(story);
     }
@@ -174,11 +180,34 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        optionDispatcher.get(id).run();
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @NonNull
+    private void initOptions() {
+        this.optionDispatcher = new SparseArray<>();
+        optionDispatcher.put(R.id.action_reset, this::reset);
+        optionDispatcher.put(R.id.action_settings, this::showSettings);
+    }
+
+    private void showSettings() {
+        showError("Not yet available!");
+    }
+
+    private boolean reset() {
+        commands.clear();
+        story.setState("");
+        adapter.clear();
+        adapter.notifyDataSetChanged();
+        try {
+            story.tell();
+        } catch (StoryException e) {
+            System.err.println(e.getMessage());
+            showError(defaultErrorMessage);
+        }
+        return true;
     }
 
     @Override
