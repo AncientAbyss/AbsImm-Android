@@ -3,7 +3,6 @@ package net.ancientabyss.absimm;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,6 @@ import android.text.TextWatcher;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.stfalcon.chatkit.commons.models.IMessage;
@@ -49,6 +47,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
 
     private List<String> commands = new ArrayList<>();
     private MessagesListAdapter<IMessage> adapter;
+    private MessagesList messagesList;
     private Story story;
     private SparseArray<Runnable> optionDispatcher;
 
@@ -60,15 +59,10 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
-        MessagesList messagesList = (MessagesList) findViewById(R.id.messagesList);
+        messagesList = (MessagesList) findViewById(R.id.messagesList);
         adapter = new MessagesListAdapter<>(userAuthor.getId(), null);
         messagesList.setAdapter(adapter);
         story = initStory();
@@ -128,20 +122,17 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             }
         });
 
-        input.setInputListener(new MessageInput.InputListener() {
-            @Override
-            public boolean onSubmit(CharSequence input) {
-                String interaction = input.toString();
-                interact(interaction, story);
-                return true;
-            }
+        input.setInputListener(input1 -> {
+            String interaction = input1.toString();
+            interact(interaction, story);
+            return true;
         });
     }
 
     private void interact(String interaction, Story story) {
         try {
-            addText(interaction, userAuthor);
             commands.add(interaction);
+            addText(interaction, userAuthor, false);
             story.interact(interaction.toLowerCase());
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -155,6 +146,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             Resources res = getResources();
             InputStream in = res.openRawResource(R.raw.demo_txt);
             byte[] b = new byte[in.available()];
+            //noinspection ResultOfMethodCallIgnored
             in.read(b);
             story = new Loader(new TxtParser()).fromString(new String(b));
             story.addClient(this);
@@ -185,7 +177,6 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         return super.onOptionsItemSelected(item);
     }
 
-    @NonNull
     private void initOptions() {
         this.optionDispatcher = new SparseArray<>();
         optionDispatcher.put(R.id.action_reset, this::reset);
@@ -197,6 +188,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private boolean reset() {
+        //messagesList.scrollTo(0, 0);
         commands.clear();
         story.setState("");
         adapter.clear();
@@ -212,12 +204,22 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
 
     @Override
     public void reaction(String text) {
-        addText(text, botAuthor);
+        addText(text, botAuthor, shouldScroll());
     }
 
-    private void addText(String text, Author author) {
+    private boolean shouldScroll() {
+        return !commands.isEmpty(); // do not scroll for initial text
+    }
+
+    private synchronized void addText(String text, Author author, Boolean scroll) {
         String message = text.replace("\\n", "\r\n");
-        adapter.addToStart(new Message(UUID.randomUUID().toString(), message, author, new Date()), true);
+        adapter.addToStart(new Message(UUID.randomUUID().toString(), message, author, new Date()), false);
+        if (scroll) {
+            messagesList.smoothScrollBy(0, messagesList.getHeight()); // scroll to the top of the message, not the bottom as does addToStart(.., true)
+        }
+        if (!shouldScroll() && messagesList.getChildAt(0) != null) {
+            messagesList.smoothScrollToPosition(0);
+        }
     }
 
     private void showError(String text) {
