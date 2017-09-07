@@ -70,6 +70,10 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         initOptions();
 
         restoreState(story);
+
+        if (commands.isEmpty()) {
+            messagesList.scrollToPosition(1);
+        }
     }
 
     private void restoreState(Story story) {
@@ -133,6 +137,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         try {
             commands.add(interaction);
             addText(interaction, userAuthor, false);
+            messagesList.scrollToPosition(2);
             story.interact(interaction.toLowerCase());
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -181,6 +186,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         this.optionDispatcher = new SparseArray<>();
         optionDispatcher.put(R.id.action_reset, this::reset);
         optionDispatcher.put(R.id.action_settings, this::showSettings);
+        optionDispatcher.put(R.id.action_hint, this::hint);
     }
 
     private void showSettings() {
@@ -200,6 +206,10 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             showError(defaultErrorMessage);
         }
         return true;
+    }
+
+    private void hint() {
+        interact("hint", story);
     }
 
     @Override
