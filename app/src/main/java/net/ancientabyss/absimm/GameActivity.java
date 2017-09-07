@@ -218,7 +218,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             messagesList.smoothScrollBy(0, messagesList.getHeight()); // scroll to the top of the message, not the bottom as does addToStart(.., true)
         }
         if (!shouldScroll() && messagesList.getChildAt(0) != null) {
-            messagesList.smoothScrollToPosition(0);
+            messagesList.smoothScrollToPosition(1);
         }
     }
 
