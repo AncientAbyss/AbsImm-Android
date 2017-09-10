@@ -1,7 +1,9 @@
 package net.ancientabyss.absimm;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -61,8 +63,11 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        fab.setOnClickListener(view -> Snackbar.make(view, "Visit us at ancientabyss.net!", Snackbar.LENGTH_LONG)
+                .setAction(R.string.fab_action, view1 -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://ancientabyss.net"));
+                    startActivity(browserIntent);
+                }).show());
 
         messagesList = (MessagesList) findViewById(R.id.messagesList);
         adapter = new MessagesListAdapter<>(userAuthor.getId(), null);

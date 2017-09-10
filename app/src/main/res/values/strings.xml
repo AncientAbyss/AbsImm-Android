@@ -94,4 +94,5 @@
     <string name="button_send">Send</string>
     <string name="edit_message">What now...?</string>
     <string name="action_hint">Hint</string>
+    <string name="fab_action">Open</string>
 </resources>
