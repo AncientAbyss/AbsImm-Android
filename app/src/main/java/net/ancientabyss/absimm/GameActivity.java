@@ -201,7 +201,8 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private void showSettings() {
-        showError("Not yet available!");
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private boolean reset() {
