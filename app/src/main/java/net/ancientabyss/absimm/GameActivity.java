@@ -43,9 +43,11 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     private static final Author userAuthor = new Author("user", "user", "");
     private static final String prefsName = "absimm-state";
     private static final String statePrefName = "state";
+    private static final String datesPrefName = "dates";
     private static final String defaultErrorMessage = "Whoops, something went wrong! Please let us know what you were doing (feedback@ancientabyss.net)!";
 
     private List<String> commands = new ArrayList<>();
+    private List<Long> commandExecutionTimes = new ArrayList<>();
     private MessagesListAdapter<IMessage> adapter;
     private MessagesList messagesList;
     private Story story;
@@ -80,8 +82,10 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         SharedPreferences settings = getSharedPreferences(prefsName, 0);
         String state = settings.getString(statePrefName, "");
         String[] commands = StringUtils.split(state, '\t');
-        for (String command : commands) {
-            interact(command, story);
+        String dateStates = settings.getString(datesPrefName, "");
+        String[] dates = StringUtils.split(dateStates, '\t');
+        for (int i = 0; i < commands.length; ++i) {
+            interact(commands[i], story, new Date(Long.parseLong(dates[i])));
         }
     }
 
@@ -96,6 +100,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         SharedPreferences settings = getSharedPreferences(prefsName, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(statePrefName, StringUtils.join(commands, '\t'));
+        editor.putString(datesPrefName, StringUtils.join(commandExecutionTimes, '\t'));
         editor.apply();
     }
 
@@ -121,22 +126,23 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
                     if (inputText.length() > 0) input.getInputEditText().setText("");
                     return;
                 }
-                interact(lines[0], story);
+                interact(lines[0], story, new Date());
                 input.getInputEditText().setText("");
             }
         });
 
         input.setInputListener(input1 -> {
             String interaction = input1.toString();
-            interact(interaction, story);
+            interact(interaction, story, new Date());
             return true;
         });
     }
 
-    private void interact(String interaction, Story story) {
+    private void interact(String interaction, Story story, Date date) {
         try {
             commands.add(interaction);
-            addText(interaction, userAuthor, false);
+            commandExecutionTimes.add(date.getTime());
+            addText(interaction, userAuthor, false, date);
             messagesList.scrollToPosition(2);
             story.interact(interaction.toLowerCase());
         } catch (Exception e) {
@@ -196,6 +202,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     private boolean reset() {
         //messagesList.scrollTo(0, 0);
         commands.clear();
+        commandExecutionTimes.clear();
         story.setState("");
         adapter.clear();
         adapter.notifyDataSetChanged();
@@ -209,21 +216,21 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private void hint() {
-        interact("hint", story);
+        interact("hint", story, new Date());
     }
 
     @Override
     public void reaction(String text) {
-        addText(text, botAuthor, shouldScroll());
+        addText(text, botAuthor, shouldScroll(), new Date());
     }
 
     private boolean shouldScroll() {
         return !commands.isEmpty(); // do not scroll for initial text
     }
 
-    private synchronized void addText(String text, Author author, Boolean scroll) {
+    private synchronized void addText(String text, Author author, Boolean scroll, Date date) {
         String message = text.replace("\\n", "\r\n");
-        adapter.addToStart(new Message(UUID.randomUUID().toString(), message, author, new Date()), false);
+        adapter.addToStart(new Message(UUID.randomUUID().toString(), message, author, date), false);
         if (scroll) {
             messagesList.smoothScrollBy(0, messagesList.getHeight()); // scroll to the top of the message, not the bottom as does addToStart(.., true)
         }
