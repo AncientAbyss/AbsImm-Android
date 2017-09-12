@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -29,15 +31,11 @@ import net.ancientabyss.absimm.models.Author;
 import net.ancientabyss.absimm.models.Message;
 import net.ancientabyss.absimm.parser.TxtParser;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import static org.apache.commons.lang3.StringUtils.INDEX_NOT_FOUND;
 
 public class GameActivity extends AppCompatActivity implements ReactionClient {
 
@@ -46,6 +44,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     private static final String prefsName = "absimm-state";
     private static final String statePrefName = "state";
     private static final String datesPrefName = "dates";
+    private static final String themePrefName = "pref_theme";
     private static final String defaultErrorMessage = "Whoops, something went wrong! Please let us know what you were doing (feedback@ancientabyss.net)!";
 
     private List<String> commands = new ArrayList<>();
@@ -58,6 +57,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(false);
         setContentView(R.layout.activity_game);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,12 +83,27 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         }
     }
 
+    private void setTheme(boolean recreate) {
+        setTheme(getCurrentTheme());
+        if (recreate) {
+            recreate();
+        }
+    }
+
+    private int getCurrentTheme() {
+        int theme = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(themePrefName, "0"));
+        switch (theme) {
+            case 1: return R.style.AppTheme2_NoActionBar;
+            default: return R.style.AppTheme_NoActionBar;
+        }
+    }
+
     private void restoreState(Story story) {
         SharedPreferences settings = getSharedPreferences(prefsName, 0);
         String state = settings.getString(statePrefName, "");
-        String[] commands = StringUtils.split(state, '\t');
+        String[] commands = state.split("\t");
         String dateStates = settings.getString(datesPrefName, "");
-        String[] dates = StringUtils.split(dateStates, '\t');
+        String[] dates = dateStates.split("\t");
         for (int i = 0; i < commands.length; ++i) {
             interact(commands[i], story, new Date(Long.parseLong(dates[i])));
         }
@@ -101,11 +116,22 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         saveState();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setTheme(true);
+    }
+
     private void saveState() {
         SharedPreferences settings = getSharedPreferences(prefsName, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString(statePrefName, StringUtils.join(commands, '\t'));
-        editor.putString(datesPrefName, StringUtils.join(commandExecutionTimes, '\t'));
+        editor.putString(statePrefName, TextUtils.join("\t", commands));
+        ArrayList<String> executionTimes = new ArrayList<>();
+        //noinspection Convert2streamapi
+        for (Long time : commandExecutionTimes) {
+            executionTimes.add(time.toString());
+        }
+        editor.putString(datesPrefName, TextUtils.join("\t", executionTimes));
         editor.apply();
     }
 
@@ -125,8 +151,8 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             @Override
             public void afterTextChanged(Editable editable) {
                 String inputText = input.getInputEditText().getText().toString();
-                if (StringUtils.indexOf(inputText, '\n') == INDEX_NOT_FOUND) return;
-                String[] lines = StringUtils.split(inputText, '\n');
+                if (TextUtils.indexOf(inputText, '\n') < 0) return;
+                String[] lines = inputText.split("\n");
                 if (lines.length < 1) {
                     if (inputText.length() > 0) input.getInputEditText().setText("");
                     return;
@@ -201,17 +227,14 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private void showSettings() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     private boolean reset() {
         //messagesList.scrollTo(0, 0);
-        commands.clear();
-        commandExecutionTimes.clear();
-        story.setState("");
-        adapter.clear();
+        resetViewData();
         adapter.notifyDataSetChanged();
+        story.setState("");
         try {
             story.tell();
         } catch (StoryException e) {
@@ -219,6 +242,12 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             showError(defaultErrorMessage);
         }
         return true;
+    }
+
+    private void resetViewData() {
+        commands.clear();
+        commandExecutionTimes.clear();
+        adapter.clear();
     }
 
     private void hint() {
