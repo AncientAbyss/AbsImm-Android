@@ -101,9 +101,9 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     private void restoreState(Story story) {
         SharedPreferences settings = getSharedPreferences(prefsName, 0);
         String state = settings.getString(statePrefName, "");
-        String[] commands = state.split("\t");
+        String[] commands = TextUtils.split(state, "\t");
         String dateStates = settings.getString(datesPrefName, "");
-        String[] dates = dateStates.split("\t");
+        String[] dates = TextUtils.split(dateStates, "\t");
         for (int i = 0; i < commands.length; ++i) {
             interact(commands[i], story, new Date(Long.parseLong(dates[i])));
         }
