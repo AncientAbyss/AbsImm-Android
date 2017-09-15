@@ -47,7 +47,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile 'com.android.support:design:25.1.1'
     compile 'com.android.support:support-core-utils:25.1.1'
-    compile 'com.github.stfalcon:chatkit:0.1.2'
+    compile 'com.github.stfalcon:chatkit:0.2.2'
     compile 'net.ancientabyss.absimm:absimm-core:0.3-SNAPSHOT'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:support-vector-drawable:25.3.1'

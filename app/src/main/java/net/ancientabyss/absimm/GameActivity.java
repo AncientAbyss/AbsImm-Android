@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.stfalcon.chatkit.commons.models.IMessage;
@@ -69,7 +70,8 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
                     startActivity(browserIntent);
                 }).show());
 
-        messagesList = (MessagesList) findViewById(R.id.messagesList);
+        initThemableViews();
+        messagesList = (MessagesList) findViewById(getCurrentThemeIndex() == 1 ? R.id.messagesList2 : R.id.messagesList);
         adapter = new MessagesListAdapter<>(userAuthor.getId(), null);
         messagesList.setAdapter(adapter);
         story = initStory();
@@ -83,6 +85,18 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         }
     }
 
+    private void initThemableViews() {
+        int[][] themables = {
+                {R.id.messagesList, R.id.messagesList2},
+                {R.id.input, R.id.input2}
+        };
+        for (int[] viewVariations : themables) {
+            for (int i = 0; i < viewVariations.length; ++i) {
+                findViewById(viewVariations[i]).setVisibility(getCurrentThemeIndex() == i ? View.VISIBLE : View.GONE);
+            }
+        }
+    }
+
     private void setTheme(boolean recreate) {
         setTheme(getCurrentTheme());
         if (recreate) {
@@ -91,11 +105,14 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private int getCurrentTheme() {
-        int theme = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(themePrefName, "0"));
-        switch (theme) {
+        switch (getCurrentThemeIndex()) {
             case 1: return R.style.AppTheme2_NoActionBar;
             default: return R.style.AppTheme_NoActionBar;
         }
+    }
+
+    private int getCurrentThemeIndex() {
+        return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(themePrefName, "0"));
     }
 
     private void restoreState(Story story) {
@@ -136,7 +153,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private void initInputHandling(final Story story) {
-        final MessageInput input = (MessageInput) findViewById(R.id.input);
+        final MessageInput input = (MessageInput) findViewById(getCurrentThemeIndex() == 1 ? R.id.input2 : R.id.input);
 
         input.getInputEditText().addTextChangedListener(new TextWatcher() {
             @Override

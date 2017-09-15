@@ -42,6 +42,7 @@
         android:orientation="vertical">
 
         <include layout="@layout/content_game" />
+        <include layout="@layout/content_game_2" />
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -56,6 +57,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                app:inputButtonDefaultBgColor="@color/colorPrimary"
+                app:inputButtonDefaultBgPressedColor="@color/colorPrimary"
+                app:inputMaxLines="1"
+                app:inputTextColor="@color/white"
+                app:inputHint="@string/edit_message" />
+
+            <com.stfalcon.chatkit.messages.MessageInput
+                android:id="@+id/input2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone"
+                app:inputButtonDefaultBgColor="@color/colorPrimary2"
+                app:inputButtonDefaultBgPressedColor="@color/colorPrimary2"
                 app:inputMaxLines="1"
                 app:inputTextColor="@color/white"
                 app:inputHint="@string/edit_message" />
