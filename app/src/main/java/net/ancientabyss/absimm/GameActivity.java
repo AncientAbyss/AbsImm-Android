@@ -24,10 +24,10 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
-import net.ancientabyss.absimm.core.Loader;
 import net.ancientabyss.absimm.core.ReactionClient;
 import net.ancientabyss.absimm.core.Story;
 import net.ancientabyss.absimm.core.StoryException;
+import net.ancientabyss.absimm.loader.StringLoader;
 import net.ancientabyss.absimm.models.Author;
 import net.ancientabyss.absimm.models.Message;
 import net.ancientabyss.absimm.parser.TxtParser;
@@ -231,7 +231,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             byte[] b = new byte[in.available()];
             //noinspection ResultOfMethodCallIgnored
             in.read(b);
-            story = new Loader(new TxtParser()).fromString(new String(b));
+            story = new StringLoader(new TxtParser()).load(new String(b));
             story.addClient(this);
             story.tell();
         } catch (Exception e) {
