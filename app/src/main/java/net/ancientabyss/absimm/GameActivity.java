@@ -54,6 +54,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     private MessagesList messagesList;
     private Story story;
     private SparseArray<Runnable> optionDispatcher;
+    private Date restoreDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,11 +75,18 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         messagesList = (MessagesList) findViewById(getCurrentThemeIndex() == 1 ? R.id.messagesList2 : R.id.messagesList);
         adapter = new MessagesListAdapter<>(userAuthor.getId(), null);
         messagesList.setAdapter(adapter);
+
+        if (shouldStateBeRestored()) {
+            restoreDate = getInitialRestoreDate();
+        }
+
         story = initStory();
         initInputHandling(story);
         initOptions();
 
         restoreState(story);
+
+        restoreDate = null;
 
         if (commands.isEmpty()) {
             messagesList.scrollToPosition(1);
@@ -116,14 +124,30 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private void restoreState(Story story) {
-        SharedPreferences settings = getSharedPreferences(prefsName, 0);
-        String state = settings.getString(statePrefName, "");
-        String[] commands = TextUtils.split(state, "\t");
-        String dateStates = settings.getString(datesPrefName, "");
-        String[] dates = TextUtils.split(dateStates, "\t");
+        String[] commands = getRestoreCommands();
+        String[] dates = getRestoreDates();
         for (int i = 0; i < commands.length; ++i) {
-            interact(commands[i], story, new Date(Long.parseLong(dates[i])));
+            Date date = new Date(Long.parseLong(dates[i]));
+            restoreDate = date;
+            interact(commands[i], story, date);
         }
+    }
+
+    private boolean shouldStateBeRestored() {
+        return getRestoreCommands().length > 0;
+    }
+
+    private String[] getRestoreCommands() {
+        return TextUtils.split(getSharedPreferences(prefsName, 0).getString(statePrefName, ""), "\t");
+    }
+
+    private String[] getRestoreDates() {
+        return TextUtils.split(getSharedPreferences(prefsName, 0).getString(datesPrefName, ""), "\t");
+    }
+
+    private Date getInitialRestoreDate() {
+        String[] dates = getRestoreDates();
+        return (dates.length > 1) ? new Date(Long.parseLong(dates[0])) : new Date();
     }
 
     @Override
@@ -273,7 +297,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
 
     @Override
     public void reaction(String text) {
-        addText(text, botAuthor, shouldScroll(), new Date());
+        addText(text, botAuthor, shouldScroll(), restoreDate != null ? restoreDate : new Date());
     }
 
     private boolean shouldScroll() {
