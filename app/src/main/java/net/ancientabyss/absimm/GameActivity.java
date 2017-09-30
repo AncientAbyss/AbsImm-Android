@@ -282,6 +282,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             System.err.println(e.getMessage());
             showError(defaultErrorMessage);
         }
+        findViewById(getCurrentThemeIndex() == 1 ? R.id.input2 : R.id.input).setVisibility(View.VISIBLE);
         return true;
     }
 
@@ -296,8 +297,14 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     @Override
-    public void reaction(String text) {
+    public void onReact(String text) {
         addText(text, botAuthor, shouldScroll(), restoreDate != null ? restoreDate : new Date());
+    }
+
+    @Override
+    public void onFinish() {
+        addText("The End. Thanks for playing!", botAuthor, shouldScroll(), restoreDate != null ? restoreDate : new Date());
+        findViewById(getCurrentThemeIndex() == 1 ? R.id.input2 : R.id.input).setVisibility(View.GONE);
     }
 
     private boolean shouldScroll() {
