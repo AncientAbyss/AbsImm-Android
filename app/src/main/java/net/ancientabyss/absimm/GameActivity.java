@@ -55,6 +55,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     private Story story;
     private SparseArray<Runnable> optionDispatcher;
     private Date restoreDate;
+    private boolean isFinished = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,8 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         messagesList = (MessagesList) findViewById(getCurrentThemeIndex() == 1 ? R.id.messagesList2 : R.id.messagesList);
         adapter = new MessagesListAdapter<>(userAuthor.getId(), null);
         messagesList.setAdapter(adapter);
+
+        isFinished = false;
 
         if (shouldStateBeRestored()) {
             restoreDate = getInitialRestoreDate();
@@ -271,9 +274,18 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         startActivity(new Intent(this, SettingsActivity.class));
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        if (isFinished) {
+            menu.findItem(R.id.action_hint).setEnabled(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     private boolean reset() {
         //messagesList.scrollTo(0, 0);
         resetViewData();
+        isFinished = false;
         adapter.notifyDataSetChanged();
         story.setState("");
         try {
@@ -283,6 +295,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
             showError(defaultErrorMessage);
         }
         findViewById(getCurrentThemeIndex() == 1 ? R.id.input2 : R.id.input).setVisibility(View.VISIBLE);
+        invalidateOptionsMenu();
         return true;
     }
 
@@ -305,6 +318,8 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     public void onFinish() {
         addText("The End. Thanks for playing!", botAuthor, shouldScroll(), restoreDate != null ? restoreDate : new Date());
         findViewById(getCurrentThemeIndex() == 1 ? R.id.input2 : R.id.input).setVisibility(View.GONE);
+        isFinished = true;
+        invalidateOptionsMenu();
     }
 
     private boolean shouldScroll() {
