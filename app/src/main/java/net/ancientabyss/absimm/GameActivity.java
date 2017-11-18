@@ -30,12 +30,14 @@ import net.ancientabyss.absimm.core.StoryException;
 import net.ancientabyss.absimm.loader.StringLoader;
 import net.ancientabyss.absimm.models.Author;
 import net.ancientabyss.absimm.models.Message;
+import net.ancientabyss.absimm.models.Statistics;
 import net.ancientabyss.absimm.parser.TxtParser;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class GameActivity extends AppCompatActivity implements ReactionClient {
@@ -316,10 +318,21 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
 
     @Override
     public void onFinish() {
-        addText("The End. Thanks for playing!", botAuthor, shouldScroll(), restoreDate != null ? restoreDate : new Date());
         findViewById(getCurrentThemeIndex() == 1 ? R.id.input2 : R.id.input).setVisibility(View.GONE);
         isFinished = true;
         invalidateOptionsMenu();
+        addText("The End. Thanks for playing!", botAuthor, shouldScroll(), restoreDate != null ? restoreDate : new Date());
+        showStats();
+    }
+
+    private void showStats() {
+        Statistics statistics = story.getStatistics();
+        float efficiency = (float) statistics.getNumValidCommands() / (statistics.getNumValidCommands() + statistics.getNumOptionalCommands()) * 100;
+        float helplessness = (float) statistics.getNumUsedHints() / (statistics.getNumValidCommands() + statistics.getNumUsedHints()) * 100;
+        float clumsiness = (float) statistics.getNumInvalidCommands() / (statistics.getNumValidCommands() + statistics.getNumInvalidCommands()) * 100;
+        addText(String.format(Locale.ENGLISH, "Stats:\nEfficiency: %.2f\nHelplessness: %.2f\nClumsiness: %.2f", efficiency, helplessness, clumsiness),
+                botAuthor, shouldScroll(),
+                restoreDate != null ? restoreDate : new Date());
     }
 
     private boolean shouldScroll() {
