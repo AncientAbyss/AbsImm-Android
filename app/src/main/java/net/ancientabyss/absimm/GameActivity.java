@@ -327,10 +327,10 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
 
     private void showStats() {
         Statistics statistics = story.getStatistics();
-        float efficiency = (float) statistics.getNumValidCommands() / (statistics.getNumValidCommands() + statistics.getNumOptionalCommands()) * 100;
-        float helplessness = (float) statistics.getNumUsedHints() / (statistics.getNumValidCommands() + statistics.getNumUsedHints()) * 100;
-        float clumsiness = (float) statistics.getNumInvalidCommands() / (statistics.getNumValidCommands() + statistics.getNumInvalidCommands()) * 100;
-        addText(String.format(Locale.ENGLISH, "Stats:\nEfficiency: %.2f\nHelplessness: %.2f\nClumsiness: %.2f", efficiency, helplessness, clumsiness),
+        addText(String.format(Locale.ENGLISH, "Stats:\nEfficiency: %.2f\nHelplessness: %.2f\nClumsiness: %.2f",
+                statistics.getEfficiency(),
+                statistics.getHelplessness(),
+                statistics.getClumsiness()),
                 botAuthor, shouldScroll(),
                 restoreDate != null ? restoreDate : new Date());
     }
