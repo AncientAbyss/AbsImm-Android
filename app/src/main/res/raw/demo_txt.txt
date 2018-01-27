@@ -21,7 +21,6 @@ Wohaa, cool! If you want to share one of your stories as interactive adventure,
 you can already do so, just have a look at the /homepage!
 If you need assistance, or simply do not want to do this yourself, please let me know! (/contact).
 
-* writer (writer)
 * developer (developer)
 * contact (contact)
 * homepage (homepage)
@@ -31,7 +30,6 @@ Thats great news! If you want to contribute, or just have a look at the source, 
 I would be super happy if you would like to contribute, you know? Lets build the most accessible and generic text adventure engine ever!
 
 * writer (writer)
-* developer (developer)
 * contact (contact)
 * homepage (homepage)
 
@@ -49,7 +47,6 @@ So, write me! :)
 
 * writer (writer)
 * developer (developer)
-* contact (contact)
 * homepage (homepage)
 
 homepage:
@@ -58,4 +55,3 @@ You can find all information that is available so far at https://github.com/Anci
 * writer (writer)
 * developer (developer)
 * contact (contact)
-* homepage (homepage)
