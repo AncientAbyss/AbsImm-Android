@@ -32,6 +32,7 @@ import net.ancientabyss.absimm.models.Author;
 import net.ancientabyss.absimm.models.Message;
 import net.ancientabyss.absimm.models.Statistics;
 import net.ancientabyss.absimm.parser.TxtParser;
+import net.ancientabyss.absimm.utils.KeyboardUtil;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -62,6 +63,10 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        KeyboardUtil keyboardUtil = new KeyboardUtil(this, findViewById(android.R.id.content));
+        keyboardUtil.enable();
+
         setTheme(false);
         setContentView(R.layout.activity_game);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
