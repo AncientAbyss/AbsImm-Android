@@ -69,10 +69,10 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
 
         setTheme(false);
         setContentView(R.layout.activity_game);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> Snackbar.make(view, "Visit us at ancientabyss.net!", Snackbar.LENGTH_LONG)
                 .setAction(R.string.fab_action, view1 -> {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://ancientabyss.net"));
@@ -80,7 +80,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
                 }).show());
 
         initThemableViews();
-        messagesList = (MessagesList) findViewById(getCurrentThemeIndex() == 1 ? R.id.messagesList2 : R.id.messagesList);
+        messagesList = findViewById(getCurrentThemeIndex() == 1 ? R.id.messagesList2 : R.id.messagesList);
         adapter = new MessagesListAdapter<>(userAuthor.getId(), null);
         messagesList.setAdapter(adapter);
 
@@ -187,7 +187,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
     }
 
     private void initInputHandling(final Story story) {
-        final MessageInput input = (MessageInput) findViewById(getCurrentThemeIndex() == 1 ? R.id.input2 : R.id.input);
+        final MessageInput input = findViewById(getCurrentThemeIndex() == 1 ? R.id.input2 : R.id.input);
 
         input.getInputEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -355,7 +355,7 @@ public class GameActivity extends AppCompatActivity implements ReactionClient {
         }
     }
 
-    private void showError(String text) {
+    private void showError(@SuppressWarnings("SameParameterValue") String text) {
         Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
     }
 }

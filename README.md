@@ -7,5 +7,5 @@ An AbsImm client for Android.
 Requirements
 ------------
 
-* Android Studio 3.0
-* Android 4.1 SDK
+* Android Studio 3.2
+* Android 9 SDK

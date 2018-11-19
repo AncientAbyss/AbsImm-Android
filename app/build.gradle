@@ -1,18 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 26
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "net.ancientabyss.absimm"
         minSdkVersion 16
-        targetSdkVersion 19
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        jackOptions {
-            enabled true
-        }
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -39,20 +36,20 @@ android {
 }
 
 dependencies {
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.1'
     // compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
-    compile 'com.android.support:support-core-utils:25.1.1'
-    compile 'com.github.stfalcon:chatkit:0.2.2'
-    compile 'net.sourceforge.streamsupport:streamsupport:1.5.6'
-    compile 'net.ancientabyss.absimm:absimm-core:0.4-SNAPSHOT'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:support-vector-drawable:25.3.1'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:support-core-utils:26.1.0'
+    implementation 'com.github.stfalcon:chatkit:0.2.2'
+    implementation 'net.sourceforge.streamsupport:streamsupport:1.5.6'
+    implementation 'net.ancientabyss.absimm:absimm-core:0.4-SNAPSHOT'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:support-vector-drawable:26.1.0'
+    testImplementation 'junit:junit:4.12'
 }
 
 repositories {
